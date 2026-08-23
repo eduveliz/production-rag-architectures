@@ -4,7 +4,8 @@
   "description": "Production RAG Architectures & Advanced AI Engineering Course Modules",
   "type": "module",
   "scripts": {
-    "test:01": "tsx --env-file=.env 01-semantic-chunker/test.ts"
+    "test:01": "tsx --env-file=.env 01-semantic-chunker/test.ts",
+    "test:02": "tsx --env-file=.env 02-vector-store/test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.18.0",

@@ -16,8 +16,8 @@ This repository contains production-grade implementations, architectural pattern
 | # | Module | Description | Status |
 |---|---|---|---|
 | **01** | [`01-semantic-chunker`](./01-semantic-chunker) | Semantic Chunking using Gemini Embeddings & Cosine Thresholding vs Fixed-Size Chunking | ✅ Completed |
-| **02** | *Coming Soon* | Contextual Embeddings & Hybrid Search (Dense + Sparse / BM25) | ⏳ Upcoming |
-| **03** | *Coming Soon* | Re-ranking Pipelines & Cross-Encoder Architectures | ⏳ Upcoming |
+| **02** | [`02-vector-store`](./02-vector-store) | In-Memory Vector Store & Cosine Similarity Dense Retrieval Pipeline | ✅ Completed |
+| **03** | *Coming Soon* | Contextual Embeddings & Hybrid Search (Dense + Sparse / BM25) | ⏳ Upcoming |
 | **04** | *Coming Soon* | Graph-RAG & Agentic Retrieval | ⏳ Upcoming |
 | **05** | *Coming Soon* | Evaluation Frameworks (RAGAS / TruLens) & Observability | ⏳ Upcoming |
 
@@ -61,8 +61,8 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 | # | Módulo | Descripción | Estado |
 |---|---|---|---|
 | **01** | [`01-semantic-chunker`](./01-semantic-chunker) | Semantic Chunking con Embeddings de Gemini y Similitud de Coseno vs Fixed-Size Chunking | ✅ Completado |
-| **02** | *Próximamente* | Contextual Embeddings y Búsqueda Híbrida (Densa + Dispersa / BM25) | ⏳ Próximo |
-| **03** | *Próximamente* | Pipelines de Re-ranking y Arquitecturas Cross-Encoder | ⏳ Próximo |
+| **02** | [`02-vector-store`](./02-vector-store) | Vector Store en Memoria y Pipeline de Recuperación Densa por Similitud de Coseno | ✅ Completado |
+| **03** | *Próximamente* | Contextual Embeddings y Búsqueda Híbrida (Densa + Dispersa / BM25) | ⏳ Próximo |
 | **04** | *Próximamente* | Graph-RAG y Recuperación Agéntica | ⏳ Próximo |
 | **05** | *Próximamente* | Frameworks de Evaluación (RAGAS / TruLens) y Observabilidad | ⏳ Próximo |
 
