@@ -17,9 +17,11 @@ This repository contains production-grade implementations, architectural pattern
 |---|---|---|---|
 | **01** | [`01-semantic-chunker`](./01-semantic-chunker) | Semantic Chunking using Gemini Embeddings & Cosine Thresholding vs Fixed-Size Chunking | ✅ Completed |
 | **02** | [`02-vector-store`](./02-vector-store) | In-Memory Vector Store & Cosine Similarity Dense Retrieval Pipeline | ✅ Completed |
-| **03** | *Coming Soon* | Contextual Embeddings & Hybrid Search (Dense + Sparse / BM25) | ⏳ Upcoming |
-| **04** | *Coming Soon* | Graph-RAG & Agentic Retrieval | ⏳ Upcoming |
-| **05** | *Coming Soon* | Evaluation Frameworks (RAGAS / TruLens) & Observability | ⏳ Upcoming |
+| **03** | [`03-rag-pipeline`](./03-rag-pipeline) | Grounded End-to-End RAG Pipeline with Context Framing & Anti-Hallucination Guardrails | ✅ Completed |
+| **04** | *Coming Soon* | Contextual Embeddings & Hybrid Search (Dense + Sparse / BM25) | ⏳ Upcoming |
+| **05** | *Coming Soon* | Re-ranking Pipelines & Cross-Encoder Architectures | ⏳ Upcoming |
+| **06** | *Coming Soon* | Graph-RAG & Agentic Retrieval | ⏳ Upcoming |
+| **07** | *Coming Soon* | Evaluation Frameworks (RAGAS / TruLens) & Observability | ⏳ Upcoming |
 
 ### 🛠️ Getting Started
 
@@ -47,6 +49,12 @@ Each module provides its dedicated execution script:
 ```bash
 # Run Module 01: Semantic Chunker
 npm run test:01
+
+# Run Module 02: In-Memory Vector Store
+npm run test:02
+
+# Run Module 03: Grounded RAG Pipeline
+npm run test:03
 ```
 
 ---
@@ -62,9 +70,11 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 |---|---|---|---|
 | **01** | [`01-semantic-chunker`](./01-semantic-chunker) | Semantic Chunking con Embeddings de Gemini y Similitud de Coseno vs Fixed-Size Chunking | ✅ Completado |
 | **02** | [`02-vector-store`](./02-vector-store) | Vector Store en Memoria y Pipeline de Recuperación Densa por Similitud de Coseno | ✅ Completado |
-| **03** | *Próximamente* | Contextual Embeddings y Búsqueda Híbrida (Densa + Dispersa / BM25) | ⏳ Próximo |
-| **04** | *Próximamente* | Graph-RAG y Recuperación Agéntica | ⏳ Próximo |
-| **05** | *Próximamente* | Frameworks de Evaluación (RAGAS / TruLens) y Observabilidad | ⏳ Próximo |
+| **03** | [`03-rag-pipeline`](./03-rag-pipeline) | Pipeline RAG End-to-End con Anclaje Estricto, Delimitación de Contexto y Guardrails | ✅ Completado |
+| **04** | *Próximamente* | Contextual Embeddings y Búsqueda Híbrida (Densa + Dispersa / BM25) | ⏳ Próximo |
+| **05** | *Próximamente* | Pipelines de Re-ranking y Arquitecturas Cross-Encoder | ⏳ Próximo |
+| **06** | *Próximamente* | Graph-RAG y Recuperación Agéntica | ⏳ Próximo |
+| **07** | *Próximamente* | Frameworks de Evaluación (RAGAS / TruLens) y Observabilidad | ⏳ Próximo |
 
 ### 🛠️ Primeros Pasos
 
@@ -92,4 +102,10 @@ Cada módulo cuenta con su propio comando de prueba:
 ```bash
 # Ejecutar Módulo 01: Semantic Chunker
 npm run test:01
+
+# Ejecutar Módulo 02: Vector Store en Memoria
+npm run test:02
+
+# Ejecutar Módulo 03: Pipeline RAG con Anclaje Estricto
+npm run test:03
 ```
