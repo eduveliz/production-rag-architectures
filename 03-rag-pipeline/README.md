@@ -11,14 +11,14 @@ Building a production-ready **Retrieval-Augmented Generation (RAG)** pipeline re
 
 ```mermaid
 flowchart TD
-    UserQuery["User Question / Query"] --> Retrieval["Dense Vector Search\n(InMemoryVectorStore.search)"]
+    UserQuery["User Question / Query"] --> Retrieval["Dense Vector Search<br/>(InMemoryVectorStore.search)"]
     Retrieval --> RelevanceCheck{"Top Score ≥ Cutoff τ (0.50) ?"}
     
-    RelevanceCheck -- "No (Out of Domain)" --> Refusal["🚫 Graceful Refusal\n(Zero-Hallucination Guardrail)"]
+    RelevanceCheck -- "No (Out of Domain)" --> Refusal["🚫 Graceful Refusal<br/>(Zero-Hallucination Guardrail)"]
     
-    RelevanceCheck -- "Yes (Sufficient Context)" --> ContextFraming["Framed Prompt Construction\n<context>[Source X] ...</context>"]
-    ContextFraming --> StrictSystemPrompt["Strict System Instruction\n• Grounding rules\n• Low Temperature (0.1)\n• Mandatory [Source X] citation"]
-    StrictSystemPrompt --> GenerativeModel["Gemini Generative Model\n(gemini-3.6-flash)"]
+    RelevanceCheck -- "Yes (Sufficient Context)" --> ContextFraming["Framed Prompt Construction<br/>&lt;context&gt;[Source X] ...&lt;/context&gt;"]
+    ContextFraming --> StrictSystemPrompt["Strict System Instruction<br/>• Grounding rules<br/>• Low Temperature (0.1)<br/>• Mandatory [Source X] citation"]
+    StrictSystemPrompt --> GenerativeModel["Gemini Generative Model<br/>(gemini-3.6-flash)"]
     GenerativeModel --> VerifiedResponse["✅ Grounded Answer with Source Citations"]
 ```
 

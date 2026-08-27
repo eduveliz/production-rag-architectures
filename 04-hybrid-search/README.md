@@ -20,13 +20,13 @@ In production RAG systems, **dense vector embeddings** excel at capturing high-l
 
 ```mermaid
 flowchart TD
-    UserQuery["Search Query (e.g., 'AuthService JWT-9042')"] --> BM25["Sparse BM25 Index\n(Lexical / Exact Matching)"]
-    UserQuery --> DenseEmbeddings["Dense Vector Store\n(gemini-embedding-001)"]
+    UserQuery["Search Query<br/>(e.g., 'AuthService JWT-9042')"] --> BM25["Sparse BM25 Index<br/>(Lexical / Exact Matching)"]
+    UserQuery --> DenseEmbeddings["Dense Vector Store<br/>(gemini-embedding-001)"]
     
-    BM25 --> BM25Rank["Ranked BM25 Results\n[r₁(d), r₂(d), ...]"]
-    DenseEmbeddings --> VectorRank["Ranked Vector Results\n[r₁(d), r₂(d), ...]"]
+    BM25 --> BM25Rank["Ranked BM25 Results<br/>[r₁(d), r₂(d), ...]"]
+    DenseEmbeddings --> VectorRank["Ranked Vector Results<br/>[r₁(d), r₂(d), ...]"]
     
-    BM25Rank --> RRF["Reciprocal Rank Fusion (RRF)\nRRF(d) = ∑ 1 / (k + r_m(d))"]
+    BM25Rank --> RRF["Reciprocal Rank Fusion (RRF)<br/>RRF(d) = ∑ 1 / (k + r_m(d))"]
     VectorRank --> RRF
     
     RRF --> UnifiedRank["🏆 Unified Hybrid Ranked Results"]

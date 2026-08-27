@@ -28,17 +28,17 @@ In large-scale production RAG architectures, retrieving relevant knowledge faces
 
 ```mermaid
 flowchart TD
-    subgraph Stage 1: Candidate Generation (High Recall, Fast)
-        Q["User Query\n(e.g., 'Express JWT middleware in TypeScript')"] --> H["Hybrid Search Engine\n(BM25 + Dense Vectors + RRF)"]
-        Corpus["Entire Document Corpus\n(10,000+ chunks)"] --> H
-        H --> Candidates["Top-K Broad Candidates\n(e.g., K = 10-50 candidates)"]
+    subgraph Stage1["Stage 1: Candidate Generation (High Recall, Fast)"]
+        Q["User Query<br/>(e.g., 'Express JWT middleware in TypeScript')"] --> H["Hybrid Search Engine<br/>(BM25 + Dense Vectors + RRF)"]
+        Corpus["Entire Document Corpus<br/>(10,000+ chunks)"] --> H
+        H --> Candidates["Top-K Broad Candidates<br/>(e.g., K = 10-50 candidates)"]
     end
 
-    subgraph Stage 2: Deep Re-Ranking (High Precision, Cross-Attention)
-        Candidates --> Reranker["Cross-Scoring Re-ranker\n(Joint Attention & Normalized Scoring 0.0 - 1.0)"]
+    subgraph Stage2["Stage 2: Deep Re-Ranking (High Precision, Cross-Attention)"]
+        Candidates --> Reranker["Cross-Scoring Re-ranker<br/>(Joint Attention & Normalized Scoring 0.0 - 1.0)"]
         Q -.-> Reranker
-        Reranker --> PrecisionScores["Scored & Justified Candidates\n[Rank 1: 0.95, Rank 2: 0.65, ...]"]
-        PrecisionScores --> TopK["🏆 Top Final Chunks\n(e.g., Top 3 to Generation Context)"]
+        Reranker --> PrecisionScores["Scored & Justified Candidates<br/>[Rank 1: 0.95, Rank 2: 0.65, ...]"]
+        PrecisionScores --> TopK["🏆 Top Final Chunks<br/>(e.g., Top 3 to Generation Context)"]
     end
 ```
 

@@ -13,16 +13,16 @@ In Module 1, we implemented **Semantic Chunking** to break long documents into t
 
 ```mermaid
 flowchart LR
-    subgraph Ingestion Pipeline
+    subgraph IngestionPipeline["Ingestion Pipeline"]
         A["Raw Document"] --> B["semanticChunkText()"]
         B --> C["Semantic Chunks"]
-        C --> D["Gemini Embeddings\n(gemini-embedding-001)"]
-        D --> E["InMemoryVectorStore\n(Records & Metadata)"]
+        C --> D["Gemini Embeddings<br/>(gemini-embedding-001)"]
+        D --> E["InMemoryVectorStore<br/>(Records & Metadata)"]
     end
 
-    subgraph Query & Retrieval Pipeline
+    subgraph QueryRetrievalPipeline["Query & Retrieval Pipeline"]
         Q["User Query"] --> F["Generate Query Embedding"]
-        F --> G["Pairwise Cosine Similarity\ncos(q, v_i)"]
+        F --> G["Pairwise Cosine Similarity<br/>cos(q, v_i)"]
         E -.-> G
         G --> H["Rank by Descending Score"]
         H --> I["Top-K Retrieved Chunks"]
