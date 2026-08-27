@@ -7,7 +7,8 @@
     "test:01": "tsx --env-file=.env 01-semantic-chunker/test.ts",
     "test:02": "tsx --env-file=.env 02-vector-store/test.ts",
     "test:03": "tsx --env-file=.env 03-rag-pipeline/test.ts",
-    "test:04": "tsx --env-file=.env 04-hybrid-search/test.ts"
+    "test:04": "tsx --env-file=.env 04-hybrid-search/test.ts",
+    "test:05": "tsx --env-file=.env 05-reranker/test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.18.0",

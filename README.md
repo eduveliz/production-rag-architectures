@@ -19,8 +19,8 @@ This repository contains production-grade implementations, architectural pattern
 | **02** | [`02-vector-store`](./02-vector-store) | In-Memory Vector Store & Cosine Similarity Dense Retrieval Pipeline | ✅ Completed |
 | **03** | [`03-rag-pipeline`](./03-rag-pipeline) | Grounded End-to-End RAG Pipeline with Context Framing & Anti-Hallucination Guardrails | ✅ Completed |
 | **04** | [`04-hybrid-search`](./04-hybrid-search) | Hybrid Search: BM25 Sparse Lexical Search + Dense Vectors + Reciprocal Rank Fusion (RRF) | ✅ Completed |
-| **05** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
-| **06** | *Coming Soon* | Re-ranking Pipelines & Cross-Encoder Architectures | ⏳ Upcoming |
+| **05** | [`05-reranker`](./05-reranker) | Two-Stage Retrieval: Cross-Encoder Re-ranking & Deep Attention Re-scoring | ✅ Completed |
+| **06** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
 | **07** | *Coming Soon* | Graph-RAG & Agentic Multi-Hop Retrieval | ⏳ Upcoming |
 | **08** | *Coming Soon* | Evaluation Frameworks (RAGAS / TruLens) & Observability | ⏳ Upcoming |
 
@@ -42,6 +42,31 @@ Where:
 - $M = \{\text{BM25}, \text{DenseVector}\}$ denotes the set of retrieval rankers.
 - $r_m(d) \in \{1, 2, \dots\}$ represents the 1-based ordinal rank of document $d$ within retriever $m$.
 - $k = 60$ is the standard smoothing parameter that ensures balanced weight distribution without requiring complex score normalization or distribution calibration.
+
+---
+
+### 🎯 Two-Stage Retrieval: Bi-Encoders vs. Cross-Encoders (Re-ranking)
+
+Production RAG systems balance throughput and precision using a **Two-Stage Retrieval Pipeline**:
+
+```
+[Entire Corpus: 100,000+ docs]
+          │
+          ▼ (Stage 1: Fast Hybrid Retrieval / Bi-Encoders)
+[Top-K Candidates: 20-50 docs]
+          │
+          ▼ (Stage 2: Cross-Encoder Re-ranker / Deep Cross-Attention)
+[Final Precision Top-N Chunks for LLM Generation]
+```
+
+#### Bi-Encoders vs. Cross-Encoders Comparison
+
+| Dimension | Bi-Encoder (Stage 1: Vector Index) | Cross-Encoder (Stage 2: Re-ranker) |
+|---|---|---|
+| **Architecture** | Dual towers: $E(q)$ and $E(d)$ encoded independently | Single tower: $E([q; \text{SEP}; d])$ encoded jointly |
+| **Token Interaction** | No cross-token attention between query and document | Full $O(L^2)$ multi-head self-attention between every query/doc token pair |
+| **Computational Speed** | Ultra-fast ($< 5\text{ms}$) via Approximate Nearest Neighbor (ANN) | Computationally heavier ($10-50\text{ms}$ over small candidate batch) |
+| **Constraint Resolution** | Moderate (may match related frameworks or false synonyms) | High (strictly evaluates specific frameworks, versions, and negations) |
 
 ---
 
@@ -80,6 +105,9 @@ npm run test:03
 
 # Run Module 04: Hybrid Search (BM25 + RRF)
 npm run test:04
+
+# Run Module 05: Two-Stage Re-ranking Pipeline
+npm run test:05
 ```
 
 ---
@@ -97,8 +125,8 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 | **02** | [`02-vector-store`](./02-vector-store) | Vector Store en Memoria y Pipeline de Recuperación Densa por Similitud de Coseno | ✅ Completado |
 | **03** | [`03-rag-pipeline`](./03-rag-pipeline) | Pipeline RAG End-to-End con Anclaje Estricto, Delimitación de Contexto y Guardrails | ✅ Completado |
 | **04** | [`04-hybrid-search`](./04-hybrid-search) | Búsqueda Híbrida: BM25 Léxico Disperso + Vectores Densos + Reciprocal Rank Fusion (RRF) | ✅ Completado |
-| **05** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
-| **06** | *Próximamente* | Pipelines de Re-ranking y Arquitecturas Cross-Encoder | ⏳ Próximo |
+| **05** | [`05-reranker`](./05-reranker) | Recuperación en Dos Etapas: Re-ranking con Cross-Encoder y Atención Profunda | ✅ Completado |
+| **06** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
 | **07** | *Próximamente* | Graph-RAG y Recuperación Agéntica Multi-Salto | ⏳ Próximo |
 | **08** | *Próximamente* | Frameworks de Evaluación (RAGAS / TruLens) y Observabilidad | ⏳ Próximo |
 
@@ -116,10 +144,14 @@ La búsqueda híbrida combina **Búsqueda Léxica Dispersa (BM25)** para coincid
 
 $$RRF(d) = \sum_{m \in M} \frac{1}{k + r_m(d)}$$
 
-Donde:
-- $M = \{\text{BM25}, \text{Vector}\}$: Conjunto de motores de búsqueda.
-- $r_m(d)$: Rango ordinal (1-indexed) del documento $d$ en el motor $m$.
-- $k = 60$: Constante de suavizado estándar que evita que las primeras posiciones distorsionen de forma desproporcionada la puntuación combinada.
+---
+
+### 🎯 Recuperación en Dos Etapas: Bi-Encoders vs. Cross-Encoders (Re-ranking)
+
+Los sistemas RAG de producción equilibran velocidad y precisión mediante un **Pipeline de Dos Etapas**:
+
+1. **Etapa 1 (Bi-Encoders / Búsqueda Híbrida)**: Generación rápida de candidatos de alto recall sobre todo el corpus en milisegundos.
+2. **Etapa 2 (Cross-Encoder / Re-ranker)**: Evaluación con atención cruzada token a token sobre los mejores candidatos preseleccionados ($K=20-50$), ordenando con máxima precisión antes de enviar el contexto al LLM generativo.
 
 ---
 
@@ -158,4 +190,7 @@ npm run test:03
 
 # Ejecutar Módulo 04: Búsqueda Híbrida (BM25 + RRF)
 npm run test:04
+
+# Ejecutar Módulo 05: Re-ranking en Dos Etapas
+npm run test:05
 ```
