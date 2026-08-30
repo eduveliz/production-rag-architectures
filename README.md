@@ -21,8 +21,9 @@ This repository contains production-grade implementations, architectural pattern
 | **04** | [`04-hybrid-search`](./04-hybrid-search) | Hybrid Search: BM25 Sparse Lexical Search + Dense Vectors + Reciprocal Rank Fusion (RRF) | ✅ Completed |
 | **05** | [`05-reranker`](./05-reranker) | Two-Stage Retrieval: Cross-Encoder Re-ranking & Deep Attention Re-scoring | ✅ Completed |
 | **06** | [`06-evaluator`](./06-evaluator) | Automated Evaluation: LLM-as-a-Judge & The RAG Triad (Faithfulness & Relevance) | ✅ Completed |
-| **07** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
-| **08** | *Coming Soon* | Graph-RAG & Agentic Multi-Hop Retrieval | ⏳ Upcoming |
+| **07** | [`07-guardrails`](./07-guardrails) | Context Poisoning & Security Guardrails: Fast-Path Regex, Neural Inspection & CDATA Isolation | ✅ Completed |
+| **08** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
+| **09** | *Coming Soon* | Graph-RAG & Agentic Multi-Hop Retrieval | ⏳ Upcoming |
 
 ---
 
@@ -83,6 +84,16 @@ Production Guardrail: $\text{Faithfulness} \ge 0.85$ and $\text{Answer Relevance
 
 ---
 
+### 🛡️ Context Poisoning & Security Guardrails
+
+To protect production pipelines against **Indirect Prompt Injections** and adversarial context hijacking (OWASP LLM01 & LLM05), a multi-layer defense-in-depth framework is applied:
+
+1. **Layer 1 — Fast-Path Regex Filter ($< 1\text{ms}$)**: Scans for explicit instruction overrides, roleplay triggers, and exfiltration patterns.
+2. **Layer 2 — Deep Neural LLM Classifier**: Uses a zero-temperature model to identify subtle and indirect adversarial payloads.
+3. **Layer 3 — Structural CDATA Context Isolation**: Wraps chunks inside XML `<document id="..."><![CDATA[ ... ]]></document>` blocks and sanitizes control tags to prevent delimiter escape.
+
+---
+
 ### 🛠️ Getting Started
 
 #### Prerequisites
@@ -124,6 +135,9 @@ npm run test:05
 
 # Run Module 06: Automated Evaluation & LLM-as-a-Judge
 npm run test:06
+
+# Run Module 07: Security Guardrails & Context Sanitization
+npm run test:07
 ```
 
 ---
@@ -143,8 +157,9 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 | **04** | [`04-hybrid-search`](./04-hybrid-search) | Búsqueda Híbrida: BM25 Léxico Disperso + Vectores Densos + Reciprocal Rank Fusion (RRF) | ✅ Completado |
 | **05** | [`05-reranker`](./05-reranker) | Recuperación en Dos Etapas: Re-ranking con Cross-Encoder y Atención Profunda | ✅ Completado |
 | **06** | [`06-evaluator`](./06-evaluator) | Evaluación Automatizada: LLM-as-a-Judge y la Tríada RAG (Fidelidad y Relevancia) | ✅ Completado |
-| **07** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
-| **08** | *Próximamente* | Graph-RAG y Recuperación Agéntica Multi-Salto | ⏳ Próximo |
+| **07** | [`07-guardrails`](./07-guardrails) | Envenenamiento de Contexto y Guardrails: Filtro Regex, Inspección Neuronal y CDATA | ✅ Completado |
+| **08** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
+| **09** | *Próximamente* | Graph-RAG y Recuperación Agéntica Multi-Salto | ⏳ Próximo |
 
 ---
 
@@ -181,6 +196,16 @@ La evaluación continua en producción implementa el patrón **LLM-as-a-Judge** 
 3. **Relevancia de la Respuesta ($Q \rightarrow A$)**: Verifica que el modelo responda con precisión a la pregunta del usuario.
 
 Guardrail de producción: $\text{Fidelidad} \ge 0.85$ y $\text{Relevancia} \ge 0.80$.
+
+---
+
+### 🛡️ Envenenamiento de Contexto y Guardrails de Seguridad
+
+Para proteger las arquitecturas RAG frente a **Inyecciones Indirectas de Prompts** y manipulaciones adversarias (OWASP LLM01 y LLM05), se despliega una defensa en profundidad de tres capas:
+
+1. **Capa 1 — Filtro Heurístico Rápido (Regex $< 1\text{ms}$)**: Detección instantánea de patrones de anulación de instrucciones y jailbreak.
+2. **Capa 2 — Clasificador Neuronal Profundo**: Modelo LLM a temperatura cero especializado en detectar inyecciones sutiles y esteganográficas.
+3. **Capa 3 — Encapsulamiento Estructural con CDATA**: Aislamiento dentro de bloques XML `<document id="..."><![CDATA[ ... ]]></document>` con saneamiento de etiquetas para prevenir escapes de delimitador.
 
 ---
 
@@ -225,4 +250,7 @@ npm run test:05
 
 # Ejecutar Módulo 06: Evaluación Automatizada (Tríada RAG)
 npm run test:06
+
+# Ejecutar Módulo 07: Guardrails de Seguridad y Sanitización
+npm run test:07
 ```
