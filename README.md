@@ -20,9 +20,9 @@ This repository contains production-grade implementations, architectural pattern
 | **03** | [`03-rag-pipeline`](./03-rag-pipeline) | Grounded End-to-End RAG Pipeline with Context Framing & Anti-Hallucination Guardrails | ✅ Completed |
 | **04** | [`04-hybrid-search`](./04-hybrid-search) | Hybrid Search: BM25 Sparse Lexical Search + Dense Vectors + Reciprocal Rank Fusion (RRF) | ✅ Completed |
 | **05** | [`05-reranker`](./05-reranker) | Two-Stage Retrieval: Cross-Encoder Re-ranking & Deep Attention Re-scoring | ✅ Completed |
-| **06** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
-| **07** | *Coming Soon* | Graph-RAG & Agentic Multi-Hop Retrieval | ⏳ Upcoming |
-| **08** | *Coming Soon* | Evaluation Frameworks (RAGAS / TruLens) & Observability | ⏳ Upcoming |
+| **06** | [`06-evaluator`](./06-evaluator) | Automated Evaluation: LLM-as-a-Judge & The RAG Triad (Faithfulness & Relevance) | ✅ Completed |
+| **07** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
+| **08** | *Coming Soon* | Graph-RAG & Agentic Multi-Hop Retrieval | ⏳ Upcoming |
 
 ---
 
@@ -70,6 +70,19 @@ Production RAG systems balance throughput and precision using a **Two-Stage Retr
 
 ---
 
+### ⚖️ Automated Evaluation & LLM-as-a-Judge (The RAG Triad)
+
+Continuous evaluation in production relies on **LLM-as-a-Judge** scoring the three core pillars of **The RAG Triad**:
+
+1. **Context Relevance ($Q \rightarrow C$)**: Measures whether the retrieved chunks are relevant and noise-free.
+2. **Faithfulness / Groundedness ($C \rightarrow A$)**: Evaluates whether every factual claim in the generated answer is strictly supported by the context, preventing hallucinations:
+   $$\text{Faithfulness} = \frac{|\text{Verified Claims Supported by } C|}{|\text{Total Claims in } A|}$$
+3. **Answer Relevance ($Q \rightarrow A$)**: Ensures the model directly answers the user's intent without wandering or evading.
+
+Production Guardrail: $\text{Faithfulness} \ge 0.85$ and $\text{Answer Relevance} \ge 0.80$.
+
+---
+
 ### 🛠️ Getting Started
 
 #### Prerequisites
@@ -108,6 +121,9 @@ npm run test:04
 
 # Run Module 05: Two-Stage Re-ranking Pipeline
 npm run test:05
+
+# Run Module 06: Automated Evaluation & LLM-as-a-Judge
+npm run test:06
 ```
 
 ---
@@ -126,9 +142,9 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 | **03** | [`03-rag-pipeline`](./03-rag-pipeline) | Pipeline RAG End-to-End con Anclaje Estricto, Delimitación de Contexto y Guardrails | ✅ Completado |
 | **04** | [`04-hybrid-search`](./04-hybrid-search) | Búsqueda Híbrida: BM25 Léxico Disperso + Vectores Densos + Reciprocal Rank Fusion (RRF) | ✅ Completado |
 | **05** | [`05-reranker`](./05-reranker) | Recuperación en Dos Etapas: Re-ranking con Cross-Encoder y Atención Profunda | ✅ Completado |
-| **06** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
-| **07** | *Próximamente* | Graph-RAG y Recuperación Agéntica Multi-Salto | ⏳ Próximo |
-| **08** | *Próximamente* | Frameworks de Evaluación (RAGAS / TruLens) y Observabilidad | ⏳ Próximo |
+| **06** | [`06-evaluator`](./06-evaluator) | Evaluación Automatizada: LLM-as-a-Judge y la Tríada RAG (Fidelidad y Relevancia) | ✅ Completado |
+| **07** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
+| **08** | *Próximamente* | Graph-RAG y Recuperación Agéntica Multi-Salto | ⏳ Próximo |
 
 ---
 
@@ -152,6 +168,19 @@ Los sistemas RAG de producción equilibran velocidad y precisión mediante un **
 
 1. **Etapa 1 (Bi-Encoders / Búsqueda Híbrida)**: Generación rápida de candidatos de alto recall sobre todo el corpus en milisegundos.
 2. **Etapa 2 (Cross-Encoder / Re-ranker)**: Evaluación con atención cruzada token a token sobre los mejores candidatos preseleccionados ($K=20-50$), ordenando con máxima precisión antes de enviar el contexto al LLM generativo.
+
+---
+
+### ⚖️ Evaluación Automatizada y LLM-as-a-Judge (La Tríada RAG)
+
+La evaluación continua en producción implementa el patrón **LLM-as-a-Judge** midiendo **La Tríada RAG**:
+
+1. **Relevancia del Contexto ($Q \rightarrow C$)**: Evalúa la pureza y ausencia de ruido en los fragmentos recuperados.
+2. **Fidelidad / Anclaje (*Faithfulness*) ($C \rightarrow A$)**: Valida que cada dato emitido por el modelo esté fundamentado en los fragmentos provistos, detectando alucinaciones:
+   $$\text{Faithfulness} = \frac{\text{Afirmaciones válidas en } C}{\text{Total de afirmaciones en } A}$$
+3. **Relevancia de la Respuesta ($Q \rightarrow A$)**: Verifica que el modelo responda con precisión a la pregunta del usuario.
+
+Guardrail de producción: $\text{Fidelidad} \ge 0.85$ y $\text{Relevancia} \ge 0.80$.
 
 ---
 
@@ -193,4 +222,7 @@ npm run test:04
 
 # Ejecutar Módulo 05: Re-ranking en Dos Etapas
 npm run test:05
+
+# Ejecutar Módulo 06: Evaluación Automatizada (Tríada RAG)
+npm run test:06
 ```
