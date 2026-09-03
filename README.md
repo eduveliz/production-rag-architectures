@@ -22,7 +22,7 @@ This repository contains production-grade implementations, architectural pattern
 | **05** | [`05-reranker`](./05-reranker) | Two-Stage Retrieval: Cross-Encoder Re-ranking & Deep Attention Re-scoring | ✅ Completed |
 | **06** | [`06-evaluator`](./06-evaluator) | Automated Evaluation: LLM-as-a-Judge & The RAG Triad (Faithfulness & Relevance) | ✅ Completed |
 | **07** | [`07-guardrails`](./07-guardrails) | Context Poisoning & Security Guardrails: Fast-Path Regex, Neural Inspection & CDATA Isolation | ✅ Completed |
-| **08** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
+| **08** | [`08-query-transformer`](./08-query-transformer) | Query Transformation Pipelines: Multi-Query Expansion, Step-Back Prompting & HyDE | ✅ Completed |
 | **09** | *Coming Soon* | Graph-RAG & Agentic Multi-Hop Retrieval | ⏳ Upcoming |
 
 ---
@@ -38,11 +38,6 @@ While dense embeddings excel at capturing high-level conceptual nuances, they su
 Hybrid search pairs **Sparse Lexical Search (BM25)** for exact keyword matching with **Dense Semantic Vectors** for conceptual coverage, uniting both ranking systems using **Reciprocal Rank Fusion (RRF)**:
 
 $$RRF(d) = \sum_{m \in M} \frac{1}{k + r_m(d)}$$
-
-Where:
-- $M = \{\text{BM25}, \text{DenseVector}\}$ denotes the set of retrieval rankers.
-- $r_m(d) \in \{1, 2, \dots\}$ represents the 1-based ordinal rank of document $d$ within retriever $m$.
-- $k = 60$ is the standard smoothing parameter that ensures balanced weight distribution without requiring complex score normalization or distribution calibration.
 
 ---
 
@@ -94,6 +89,19 @@ To protect production pipelines against **Indirect Prompt Injections** and adver
 
 ---
 
+### 🔄 Query Transformation Pipelines (Multi-Query, Step-Back & HyDE)
+
+To overcome ambiguous, short, or poorly formulated user queries, **Query Transformation Pipelines** expand and reformulate input requests:
+
+1. **Multi-Query Expansion**: Generates $K$ alternative technical reformulations to bridge lexical mismatch and vocabulary gaps.
+2. **Step-Back Prompting**: Generates a high-level conceptual question targeting underlying architectural or protocol principles.
+3. **Hypothetical Document Embeddings (HyDE)**: Generates a dense hypothetical answer passage to query embedding space in document-document space.
+
+Cumulative RRF Fusion:
+$$RRF_{\text{cumulative}}(d) = \sum_{q \in \mathcal{Q}_{\text{transformed}}} RRF_q(d)$$
+
+---
+
 ### 🛠️ Getting Started
 
 #### Prerequisites
@@ -138,6 +146,9 @@ npm run test:06
 
 # Run Module 07: Security Guardrails & Context Sanitization
 npm run test:07
+
+# Run Module 08: Query Transformation Pipelines (Multi-Query, Step-Back, HyDE)
+npm run test:08
 ```
 
 ---
@@ -158,7 +169,7 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 | **05** | [`05-reranker`](./05-reranker) | Recuperación en Dos Etapas: Re-ranking con Cross-Encoder y Atención Profunda | ✅ Completado |
 | **06** | [`06-evaluator`](./06-evaluator) | Evaluación Automatizada: LLM-as-a-Judge y la Tríada RAG (Fidelidad y Relevancia) | ✅ Completado |
 | **07** | [`07-guardrails`](./07-guardrails) | Envenenamiento de Contexto y Guardrails: Filtro Regex, Inspección Neuronal y CDATA | ✅ Completado |
-| **08** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
+| **08** | [`08-query-transformer`](./08-query-transformer) | Transformación de Consultas: Multi-Query, Step-Back Prompting y HyDE | ✅ Completado |
 | **09** | *Próximamente* | Graph-RAG y Recuperación Agéntica Multi-Salto | ⏳ Próximo |
 
 ---
@@ -209,6 +220,19 @@ Para proteger las arquitecturas RAG frente a **Inyecciones Indirectas de Prompts
 
 ---
 
+### 🔄 Pipelines de Transformación de Consultas (Multi-Query, Step-Back y HyDE)
+
+Para resolver consultas ambiguas, incompletas o con discrepancia de vocabulario:
+
+1. **Multi-Query Expansion**: Genera variantes alternativas para explorar diferentes facetas léxicas y sinónimos.
+2. **Step-Back Prompting**: Formula una pregunta más amplia sobre los principios teóricos o conceptos arquitectónicos subyacentes.
+3. **Hypothetical Document Embeddings (HyDE)**: Genera un texto hipotético de respuesta que se indexa en el espacio vectorial para buscar documento contra documento.
+
+Fusión y Puntuación Acumulativa RRF:
+$$RRF_{\text{acumulado}}(d) = \sum_{q \in \mathcal{Q}_{\text{transformadas}}} RRF_q(d)$$
+
+---
+
 ### 🛠️ Primeros Pasos
 
 #### Requisitos Previos
@@ -253,4 +277,7 @@ npm run test:06
 
 # Ejecutar Módulo 07: Guardrails de Seguridad y Sanitización
 npm run test:07
+
+# Ejecutar Módulo 08: Transformación de Consultas (Multi-Query, Step-Back, HyDE)
+npm run test:08
 ```
