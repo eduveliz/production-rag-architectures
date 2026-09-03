@@ -11,7 +11,8 @@
     "test:05": "tsx --env-file=.env 05-reranker/test.ts",
     "test:06": "tsx --env-file=.env 06-evaluator/test.ts",
     "test:07": "tsx --env-file=.env 07-guardrails/test.ts",
-    "test:08": "tsx --env-file=.env 08-query-transformer/test.ts"
+    "test:08": "tsx --env-file=.env 08-query-transformer/test.ts",
+    "test:09": "tsx --env-file=.env 09-adaptive-router/test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.18.0",

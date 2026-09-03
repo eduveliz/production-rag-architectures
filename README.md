@@ -23,7 +23,8 @@ This repository contains production-grade implementations, architectural pattern
 | **06** | [`06-evaluator`](./06-evaluator) | Automated Evaluation: LLM-as-a-Judge & The RAG Triad (Faithfulness & Relevance) | ✅ Completed |
 | **07** | [`07-guardrails`](./07-guardrails) | Context Poisoning & Security Guardrails: Fast-Path Regex, Neural Inspection & CDATA Isolation | ✅ Completed |
 | **08** | [`08-query-transformer`](./08-query-transformer) | Query Transformation Pipelines: Multi-Query Expansion, Step-Back Prompting & HyDE | ✅ Completed |
-| **09** | *Coming Soon* | Graph-RAG & Agentic Multi-Hop Retrieval | ⏳ Upcoming |
+| **09** | [`09-adaptive-router`](./09-adaptive-router) | Adaptive Query Routing & Agentic Dispatch: Direct LLM, Structured SQL, and Vector RAG | ✅ Completed |
+| **10** | *Coming Soon* | Graph-RAG & Agentic Multi-Hop Retrieval | ⏳ Upcoming |
 
 ---
 
@@ -75,8 +76,6 @@ Continuous evaluation in production relies on **LLM-as-a-Judge** scoring the thr
    $$\text{Faithfulness} = \frac{|\text{Verified Claims Supported by } C|}{|\text{Total Claims in } A|}$$
 3. **Answer Relevance ($Q \rightarrow A$)**: Ensures the model directly answers the user's intent without wandering or evading.
 
-Production Guardrail: $\text{Faithfulness} \ge 0.85$ and $\text{Answer Relevance} \ge 0.80$.
-
 ---
 
 ### 🛡️ Context Poisoning & Security Guardrails
@@ -91,14 +90,21 @@ To protect production pipelines against **Indirect Prompt Injections** and adver
 
 ### 🔄 Query Transformation Pipelines (Multi-Query, Step-Back & HyDE)
 
-To overcome ambiguous, short, or poorly formulated user queries, **Query Transformation Pipelines** expand and reformulate input requests:
+To overcome ambiguous or poorly formulated user queries:
 
-1. **Multi-Query Expansion**: Generates $K$ alternative technical reformulations to bridge lexical mismatch and vocabulary gaps.
-2. **Step-Back Prompting**: Generates a high-level conceptual question targeting underlying architectural or protocol principles.
-3. **Hypothetical Document Embeddings (HyDE)**: Generates a dense hypothetical answer passage to query embedding space in document-document space.
+1. **Multi-Query Expansion**: Generates $K$ alternative technical reformulations.
+2. **Step-Back Prompting**: Extracts high-level conceptual questions.
+3. **Hypothetical Document Embeddings (HyDE)**: Generates a dense hypothetical answer passage to query in document-document space.
 
-Cumulative RRF Fusion:
-$$RRF_{\text{cumulative}}(d) = \sum_{q \in \mathcal{Q}_{\text{transformed}}} RRF_q(d)$$
+---
+
+### 🧭 Adaptive Query Routing & Agentic Dispatch
+
+Naive architectures push all queries through heavy vector retrieval. **Adaptive Routing** analyzes intent and dispatches requests to the optimal specialized engine:
+
+1. **`DIRECT_RESPONSE`**: Handles greetings and general conversational logic with zero retrieval latency and minimal token consumption.
+2. **`STRUCTURED_QUERY`**: Routes analytical aggregation queries (e.g., sales metrics, counts) to deterministic SQL engines.
+3. **`VECTOR_RAG`**: Directs complex technical documentation questions to the full Two-Stage Hybrid Search & Re-ranking pipeline.
 
 ---
 
@@ -149,6 +155,9 @@ npm run test:07
 
 # Run Module 08: Query Transformation Pipelines (Multi-Query, Step-Back, HyDE)
 npm run test:08
+
+# Run Module 09: Adaptive Query Routing & Dispatch
+npm run test:09
 ```
 
 ---
@@ -170,7 +179,8 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 | **06** | [`06-evaluator`](./06-evaluator) | Evaluación Automatizada: LLM-as-a-Judge y la Tríada RAG (Fidelidad y Relevancia) | ✅ Completado |
 | **07** | [`07-guardrails`](./07-guardrails) | Envenenamiento de Contexto y Guardrails: Filtro Regex, Inspección Neuronal y CDATA | ✅ Completado |
 | **08** | [`08-query-transformer`](./08-query-transformer) | Transformación de Consultas: Multi-Query, Step-Back Prompting y HyDE | ✅ Completado |
-| **09** | *Próximamente* | Graph-RAG y Recuperación Agéntica Multi-Salto | ⏳ Próximo |
+| **09** | [`09-adaptive-router`](./09-adaptive-router) | Enrutamiento Adaptativo de Consultas y Despacho Agéntico: Directo, SQL y Vector RAG | ✅ Completado |
+| **10** | *Próximamente* | Graph-RAG y Recuperación Agéntica Multi-Salto | ⏳ Próximo |
 
 ---
 
@@ -206,8 +216,6 @@ La evaluación continua en producción implementa el patrón **LLM-as-a-Judge** 
    $$\text{Faithfulness} = \frac{\text{Afirmaciones válidas en } C}{\text{Total de afirmaciones en } A}$$
 3. **Relevancia de la Respuesta ($Q \rightarrow A$)**: Verifica que el modelo responda con precisión a la pregunta del usuario.
 
-Guardrail de producción: $\text{Fidelidad} \ge 0.85$ y $\text{Relevancia} \ge 0.80$.
-
 ---
 
 ### 🛡️ Envenenamiento de Contexto y Guardrails de Seguridad
@@ -228,8 +236,15 @@ Para resolver consultas ambiguas, incompletas o con discrepancia de vocabulario:
 2. **Step-Back Prompting**: Formula una pregunta más amplia sobre los principios teóricos o conceptos arquitectónicos subyacentes.
 3. **Hypothetical Document Embeddings (HyDE)**: Genera un texto hipotético de respuesta que se indexa en el espacio vectorial para buscar documento contra documento.
 
-Fusión y Puntuación Acumulativa RRF:
-$$RRF_{\text{acumulado}}(d) = \sum_{q \in \mathcal{Q}_{\text{transformadas}}} RRF_q(d)$$
+---
+
+### 🧭 Enrutamiento Adaptativo de Consultas y Despacho Agéntico
+
+En lugar de procesar todas las solicitudes mediante búsquedas vectoriales pesadas, el **Enrutador Adaptativo** clasifica la intención y despacha a:
+
+1. **`DIRECT_RESPONSE`**: Respuestas conversacionales y lógica general sin latencia de recuperación ni costos de embeddings.
+2. **`STRUCTURED_QUERY`**: Consultas analíticas y agregaciones numéricas ejecutadas de forma determinista sobre bases de datos SQL.
+3. **`VECTOR_RAG`**: Documentación técnica y manuales complejos enrutados al pipeline completo de búsqueda híbrida y re-ranking.
 
 ---
 
@@ -280,4 +295,7 @@ npm run test:07
 
 # Ejecutar Módulo 08: Transformación de Consultas (Multi-Query, Step-Back, HyDE)
 npm run test:08
+
+# Ejecutar Módulo 09: Enrutamiento Adaptativo de Consultas
+npm run test:09
 ```
