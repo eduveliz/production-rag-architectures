@@ -25,7 +25,8 @@ This repository contains production-grade implementations, architectural pattern
 | **08** | [`08-query-transformer`](./08-query-transformer) | Query Transformation Pipelines: Multi-Query Expansion, Step-Back Prompting & HyDE | ✅ Completed |
 | **09** | [`09-adaptive-router`](./09-adaptive-router) | Adaptive Query Routing & Agentic Dispatch: Direct LLM, Structured SQL, and Vector RAG | ✅ Completed |
 | **10** | [`10-parent-document-retriever`](./10-parent-document-retriever) | Parent-Document Retrieval & Hierarchical Chunking (Small-to-Big Retrieval) | ✅ Completed |
-| **11** | *Coming Soon* | Graph-RAG & Agentic Multi-Hop Retrieval | ⏳ Upcoming |
+| **11** | [`11-graph-rag`](./11-graph-rag) | GraphRAG: Entity-Relation Extraction, Directed Knowledge Graph & Multi-Hop Traversal | ✅ Completed |
+| **12** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
 
 ---
 
@@ -56,15 +57,6 @@ Production RAG systems balance throughput and precision using a **Two-Stage Retr
           ▼ (Stage 2: Cross-Encoder Re-ranker / Deep Cross-Attention)
 [Final Precision Top-N Chunks for LLM Generation]
 ```
-
-#### Bi-Encoders vs. Cross-Encoders Comparison
-
-| Dimension | Bi-Encoder (Stage 1: Vector Index) | Cross-Encoder (Stage 2: Re-ranker) |
-|---|---|---|
-| **Architecture** | Dual towers: $E(q)$ and $E(d)$ encoded independently | Single tower: $E([q; \text{SEP}; d])$ encoded jointly |
-| **Token Interaction** | No cross-token attention between query and document | Full $O(L^2)$ multi-head self-attention between every query/doc token pair |
-| **Computational Speed** | Ultra-fast ($< 5\text{ms}$) via Approximate Nearest Neighbor (ANN) | Computationally heavier ($10-50\text{ms}$ over small candidate batch) |
-| **Constraint Resolution** | Moderate (may match related frameworks or false synonyms) | High (strictly evaluates specific frameworks, versions, and negations) |
 
 ---
 
@@ -101,8 +93,6 @@ To overcome ambiguous or poorly formulated user queries:
 
 ### 🧭 Adaptive Query Routing & Agentic Dispatch
 
-Naive architectures push all queries through heavy vector retrieval. **Adaptive Routing** analyzes intent and dispatches requests to the optimal specialized engine:
-
 1. **`DIRECT_RESPONSE`**: Handles greetings and general conversational logic with zero retrieval latency and minimal token consumption.
 2. **`STRUCTURED_QUERY`**: Routes analytical aggregation queries (e.g., sales metrics, counts) to deterministic SQL engines.
 3. **`VECTOR_RAG`**: Directs complex technical documentation questions to the full Two-Stage Hybrid Search & Re-ranking pipeline.
@@ -111,10 +101,17 @@ Naive architectures push all queries through heavy vector retrieval. **Adaptive 
 
 ### 🌲 Parent-Document Retrieval & Hierarchical Chunking (Small-to-Big)
 
-Resolves the **Chunk Size Dilemma** by decoupling dense search embeddings from generation context:
-
 1. **Index Small**: Splits parent documents into focused child chunks (sentences) and generates embeddings only for the child chunks to maximize semantic density.
 2. **Retrieve Big**: Matches query vectors against child embeddings, then dynamically hydrates the full parent document to supply rich, untruncated context to the generative LLM.
+
+---
+
+### 🕸️ GraphRAG & Multi-Hop Relational Traversal
+
+Flat vector search struggles with questions whose answers bridge across disparate documents. **GraphRAG**:
+1. **Extracts Triples**: Extracts structured directed knowledge triples ($\text{Subject} \xrightarrow{\text{Relation}} \text{Object}$) with textual evidence quotes.
+2. **Directed Graph Storage**: Builds an in-memory directed graph representing microservices, databases, and dependencies.
+3. **Multi-Hop Traversal**: Executes Breadth-First Search (BFS) starting from query seed entities up to depth $N$, allowing the LLM to explain indirect dependencies (e.g., *Billing* $\rightarrow$ *Auth Gateway* $\rightarrow$ *CloudTrail*).
 
 ---
 
@@ -171,6 +168,9 @@ npm run test:09
 
 # Run Module 10: Parent-Document Retrieval & Hierarchical Chunking
 npm run test:10
+
+# Run Module 11: GraphRAG & Multi-Hop Traversal
+npm run test:11
 ```
 
 ---
@@ -194,18 +194,13 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 | **08** | [`08-query-transformer`](./08-query-transformer) | Transformación de Consultas: Multi-Query, Step-Back Prompting y HyDE | ✅ Completado |
 | **09** | [`09-adaptive-router`](./09-adaptive-router) | Enrutamiento Adaptativo de Consultas y Despacho Agéntico: Directo, SQL y Vector RAG | ✅ Completado |
 | **10** | [`10-parent-document-retriever`](./10-parent-document-retriever) | Recuperación de Documento Padre y Chunking Jerárquico (Small-to-Big Retrieval) | ✅ Completado |
-| **11** | *Próximamente* | Graph-RAG y Recuperación Agéntica Multi-Salto | ⏳ Próximo |
+| **11** | [`11-graph-rag`](./11-graph-rag) | GraphRAG: Extracción de Entidades-Relaciones, Grafo Dirigido y Travesía Multi-Salto | ✅ Completado |
+| **12** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
 
 ---
 
 ### 🔀 Búsqueda Híbrida con Reciprocal Rank Fusion (RRF)
 
-#### Por qué los Embeddings Densos Fallan en Entornos Técnicos
-Aunque los vectores densos capturan eficazmente la semántica conceptual, presentan limitaciones críticas en producción técnica:
-1. **Coincidencias Exactas y Tokens Raros**: Identificadores de código, SKUs, UUIDs, nombres de clases (`AuthService`), códigos de error y tokens como `JWT-9042` se diluyen en las dimensiones del espacio latente.
-2. **Vocabulario Fuera de Distribución (OOV)**: Términos hiperespecializados y abreviaturas técnicas no se proyectan con suficiente distancia discriminatoria.
-
-#### La Solución: BM25 + Reciprocal Rank Fusion (RRF)
 La búsqueda híbrida combina **Búsqueda Léxica Dispersa (BM25)** para coincidencias exactas con **Vectores Semánticos Densos** para abstracción conceptual, fusionando ambos sistemas mediante **Reciprocal Rank Fusion (RRF)**:
 
 $$RRF(d) = \sum_{m \in M} \frac{1}{k + r_m(d)}$$
@@ -214,8 +209,6 @@ $$RRF(d) = \sum_{m \in M} \frac{1}{k + r_m(d)}$$
 
 ### 🎯 Recuperación en Dos Etapas: Bi-Encoders vs. Cross-Encoders (Re-ranking)
 
-Los sistemas RAG de producción equilibran velocidad y precisión mediante un **Pipeline de Dos Etapas**:
-
 1. **Etapa 1 (Bi-Encoders / Búsqueda Híbrida)**: Generación rápida de candidatos de alto recall sobre todo el corpus en milisegundos.
 2. **Etapa 2 (Cross-Encoder / Re-ranker)**: Evaluación con atención cruzada token a token sobre los mejores candidatos preseleccionados ($K=20-50$), ordenando con máxima precisión antes de enviar el contexto al LLM generativo.
 
@@ -223,51 +216,48 @@ Los sistemas RAG de producción equilibran velocidad y precisión mediante un **
 
 ### ⚖️ Evaluación Automatizada y LLM-as-a-Judge (La Tríada RAG)
 
-La evaluación continua en producción implementa el patrón **LLM-as-a-Judge** midiendo **La Tríada RAG**:
-
-1. **Relevancia del Contexto ($Q \rightarrow C$)**: Evalúa la pureza y ausencia de ruido en los fragmentos recuperados.
-2. **Fidelidad / Anclaje (*Faithfulness*) ($C \rightarrow A$)**: Valida que cada dato emitido por el modelo esté fundamentado en los fragmentos provistos, detectando alucinaciones:
-   $$\text{Faithfulness} = \frac{\text{Afirmaciones válidas en } C}{\text{Total de afirmaciones en } A}$$
-3. **Relevancia de la Respuesta ($Q \rightarrow A$)**: Verifica que el modelo responda con precisión a la pregunta del usuario.
+1. **Relevancia del Contexto ($Q \rightarrow C$)**: Pureza del contexto recuperado.
+2. **Fidelidad / Anclaje (*Faithfulness*) ($C \rightarrow A$)**: Detección y eliminación de alucinaciones.
+3. **Relevancia de la Respuesta ($Q \rightarrow A$)**: Alineación con la intención del usuario.
 
 ---
 
 ### 🛡️ Envenenamiento de Contexto y Guardrails de Seguridad
 
-Para proteger las arquitecturas RAG frente a **Inyecciones Indirectas de Prompts** y manipulaciones adversarias (OWASP LLM01 y LLM05), se despliega una defensa en profundidad de tres capas:
-
-1. **Capa 1 — Filtro Heurístico Rápido (Regex $< 1\text{ms}$)**: Detección instantánea de patrones de anulación de instrucciones y jailbreak.
-2. **Capa 2 — Clasificador Neuronal Profundo**: Modelo LLM a temperatura cero especializado en detectar inyecciones sutiles y esteganográficas.
-3. **Capa 3 — Encapsulamiento Estructural con CDATA**: Aislamiento dentro de bloques XML `<document id="..."><![CDATA[ ... ]]></document>` con saneamiento de etiquetas para prevenir escapes de delimitador.
+1. **Capa 1 — Filtro Heurístico Rápido (Regex $< 1\text{ms}$)**: Bloqueo de jailbreaks.
+2. **Capa 2 — Clasificador Neuronal Profundo**: Detección de inyecciones semánticas indirectas.
+3. **Capa 3 — Encapsulamiento Estructural con CDATA**: Aislamiento seguro de fragmentos.
 
 ---
 
 ### 🔄 Pipelines de Transformación de Consultas (Multi-Query, Step-Back y HyDE)
 
-Para resolver consultas ambiguas, incompletas o con discrepancia de vocabulario:
-
-1. **Multi-Query Expansion**: Genera variantes alternativas para explorar diferentes facetas léxicas y sinónimos.
-2. **Step-Back Prompting**: Formula una pregunta más amplia sobre los principios teóricos o conceptos arquitectónicos subyacentes.
-3. **Hypothetical Document Embeddings (HyDE)**: Genera un texto hipotético de respuesta que se indexa en el espacio vectorial para buscar documento contra documento.
+1. **Multi-Query Expansion**: Variantes complementarias de la consulta.
+2. **Step-Back Prompting**: Abstracción conceptual de principios fundamentales.
+3. **Hypothetical Document Embeddings (HyDE)**: Generación de pasajes hipotéticos para búsqueda documento a documento.
 
 ---
 
 ### 🧭 Enrutamiento Adaptativo de Consultas y Despacho Agéntico
 
-En lugar de procesar todas las solicitudes mediante búsquedas vectoriales pesadas, el **Enrutador Adaptativo** clasifica la intención y despacha a:
-
-1. **`DIRECT_RESPONSE`**: Respuestas conversacionales y lógica general sin latencia de recuperación ni costos de embeddings.
-2. **`STRUCTURED_QUERY`**: Consultas analíticas y agregaciones numéricas ejecutadas de forma determinista sobre bases de datos SQL.
-3. **`VECTOR_RAG`**: Documentación técnica y manuales complejos enrutados al pipeline completo de búsqueda híbrida y re-ranking.
+1. **`DIRECT_RESPONSE`**: Respuestas conversacionales sin costo de recuperación.
+2. **`STRUCTURED_QUERY`**: Consultas analíticas sobre bases de datos SQL.
+3. **`VECTOR_RAG`**: Documentación técnica mediante búsqueda híbrida y re-ranking.
 
 ---
 
 ### 🌲 Recuperación de Documento Padre y Chunking Jerárquico (Small-to-Big)
 
-Resuelve la **Paradoja del Tamaño de Fragmento**:
+1. **Indexación con Hijos (Small)**: Embeddings atómicos de oraciones sin dilución semántica.
+2. **Recuperación con Padres (Big)**: Hidratación del documento padre completo para entregar contexto íntegro al LLM.
 
-1. **Indexación con Hijos (Small)**: Subdivide el documento padre en fragmentos pequeños (oraciones) para maximizar la densidad semántica del embedding sin dilución.
-2. **Recuperación con Padres (Big)**: Busca contra los vectores de los hijos y recupera el documento padre completo para entregar al LLM el contexto íntegro sin truncamientos.
+---
+
+### 🕸️ GraphRAG y Razonamiento Multi-Salto
+
+1. **Extracción Estructurada de Ternas**: Extrae relaciones explícitas ($\text{Sujeto} \xrightarrow{\text{Relación}} \text{Objeto}$) con evidencias textuales.
+2. **Almacén de Grafo Dirigido**: Indexa entidades y aristas en memoria.
+3. **Recorrido BFS Multi-Salto**: Conecta dependencias indirectas entre documentos aislados (ej. *Facturación* $\rightarrow$ *Auth Gateway* $\rightarrow$ *CloudTrail*).
 
 ---
 
@@ -293,7 +283,6 @@ GEMINI_API_KEY="tu_gemini_api_key"
 ```
 
 #### Ejecución de Módulos
-Cada módulo cuenta con su propio comando de prueba:
 ```bash
 # Ejecutar Módulo 01: Semantic Chunker
 npm run test:01
@@ -324,4 +313,7 @@ npm run test:09
 
 # Ejecutar Módulo 10: Recuperación de Documento Padre (Small-to-Big)
 npm run test:10
+
+# Ejecutar Módulo 11: GraphRAG y Travesía Multi-Salto
+npm run test:11
 ```
