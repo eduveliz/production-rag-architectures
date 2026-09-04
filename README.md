@@ -24,7 +24,8 @@ This repository contains production-grade implementations, architectural pattern
 | **07** | [`07-guardrails`](./07-guardrails) | Context Poisoning & Security Guardrails: Fast-Path Regex, Neural Inspection & CDATA Isolation | ✅ Completed |
 | **08** | [`08-query-transformer`](./08-query-transformer) | Query Transformation Pipelines: Multi-Query Expansion, Step-Back Prompting & HyDE | ✅ Completed |
 | **09** | [`09-adaptive-router`](./09-adaptive-router) | Adaptive Query Routing & Agentic Dispatch: Direct LLM, Structured SQL, and Vector RAG | ✅ Completed |
-| **10** | *Coming Soon* | Graph-RAG & Agentic Multi-Hop Retrieval | ⏳ Upcoming |
+| **10** | [`10-parent-document-retriever`](./10-parent-document-retriever) | Parent-Document Retrieval & Hierarchical Chunking (Small-to-Big Retrieval) | ✅ Completed |
+| **11** | *Coming Soon* | Graph-RAG & Agentic Multi-Hop Retrieval | ⏳ Upcoming |
 
 ---
 
@@ -108,6 +109,15 @@ Naive architectures push all queries through heavy vector retrieval. **Adaptive 
 
 ---
 
+### 🌲 Parent-Document Retrieval & Hierarchical Chunking (Small-to-Big)
+
+Resolves the **Chunk Size Dilemma** by decoupling dense search embeddings from generation context:
+
+1. **Index Small**: Splits parent documents into focused child chunks (sentences) and generates embeddings only for the child chunks to maximize semantic density.
+2. **Retrieve Big**: Matches query vectors against child embeddings, then dynamically hydrates the full parent document to supply rich, untruncated context to the generative LLM.
+
+---
+
 ### 🛠️ Getting Started
 
 #### Prerequisites
@@ -158,6 +168,9 @@ npm run test:08
 
 # Run Module 09: Adaptive Query Routing & Dispatch
 npm run test:09
+
+# Run Module 10: Parent-Document Retrieval & Hierarchical Chunking
+npm run test:10
 ```
 
 ---
@@ -180,7 +193,8 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 | **07** | [`07-guardrails`](./07-guardrails) | Envenenamiento de Contexto y Guardrails: Filtro Regex, Inspección Neuronal y CDATA | ✅ Completado |
 | **08** | [`08-query-transformer`](./08-query-transformer) | Transformación de Consultas: Multi-Query, Step-Back Prompting y HyDE | ✅ Completado |
 | **09** | [`09-adaptive-router`](./09-adaptive-router) | Enrutamiento Adaptativo de Consultas y Despacho Agéntico: Directo, SQL y Vector RAG | ✅ Completado |
-| **10** | *Próximamente* | Graph-RAG y Recuperación Agéntica Multi-Salto | ⏳ Próximo |
+| **10** | [`10-parent-document-retriever`](./10-parent-document-retriever) | Recuperación de Documento Padre y Chunking Jerárquico (Small-to-Big Retrieval) | ✅ Completado |
+| **11** | *Próximamente* | Graph-RAG y Recuperación Agéntica Multi-Salto | ⏳ Próximo |
 
 ---
 
@@ -248,6 +262,15 @@ En lugar de procesar todas las solicitudes mediante búsquedas vectoriales pesad
 
 ---
 
+### 🌲 Recuperación de Documento Padre y Chunking Jerárquico (Small-to-Big)
+
+Resuelve la **Paradoja del Tamaño de Fragmento**:
+
+1. **Indexación con Hijos (Small)**: Subdivide el documento padre en fragmentos pequeños (oraciones) para maximizar la densidad semántica del embedding sin dilución.
+2. **Recuperación con Padres (Big)**: Busca contra los vectores de los hijos y recupera el documento padre completo para entregar al LLM el contexto íntegro sin truncamientos.
+
+---
+
 ### 🛠️ Primeros Pasos
 
 #### Requisitos Previos
@@ -298,4 +321,7 @@ npm run test:08
 
 # Ejecutar Módulo 09: Enrutamiento Adaptativo de Consultas
 npm run test:09
+
+# Ejecutar Módulo 10: Recuperación de Documento Padre (Small-to-Big)
+npm run test:10
 ```
