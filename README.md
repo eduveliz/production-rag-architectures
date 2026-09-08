@@ -26,7 +26,8 @@ This repository contains production-grade implementations, architectural pattern
 | **09** | [`09-adaptive-router`](./09-adaptive-router) | Adaptive Query Routing & Agentic Dispatch: Direct LLM, Structured SQL, and Vector RAG | ✅ Completed |
 | **10** | [`10-parent-document-retriever`](./10-parent-document-retriever) | Parent-Document Retrieval & Hierarchical Chunking (Small-to-Big Retrieval) | ✅ Completed |
 | **11** | [`11-graph-rag`](./11-graph-rag) | GraphRAG: Entity-Relation Extraction, Directed Knowledge Graph & Multi-Hop Traversal | ✅ Completed |
-| **12** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
+| **12** | [`12-conversational-rag`](./12-conversational-rag) | Conversational RAG & Contextual Query Condensation (Coreference & Anaphora Resolution) | ✅ Completed |
+| **13** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
 
 ---
 
@@ -83,8 +84,6 @@ To protect production pipelines against **Indirect Prompt Injections** and adver
 
 ### 🔄 Query Transformation Pipelines (Multi-Query, Step-Back & HyDE)
 
-To overcome ambiguous or poorly formulated user queries:
-
 1. **Multi-Query Expansion**: Generates $K$ alternative technical reformulations.
 2. **Step-Back Prompting**: Extracts high-level conceptual questions.
 3. **Hypothetical Document Embeddings (HyDE)**: Generates a dense hypothetical answer passage to query in document-document space.
@@ -108,10 +107,18 @@ To overcome ambiguous or poorly formulated user queries:
 
 ### 🕸️ GraphRAG & Multi-Hop Relational Traversal
 
-Flat vector search struggles with questions whose answers bridge across disparate documents. **GraphRAG**:
 1. **Extracts Triples**: Extracts structured directed knowledge triples ($\text{Subject} \xrightarrow{\text{Relation}} \text{Object}$) with textual evidence quotes.
 2. **Directed Graph Storage**: Builds an in-memory directed graph representing microservices, databases, and dependencies.
-3. **Multi-Hop Traversal**: Executes Breadth-First Search (BFS) starting from query seed entities up to depth $N$, allowing the LLM to explain indirect dependencies (e.g., *Billing* $\rightarrow$ *Auth Gateway* $\rightarrow$ *CloudTrail*).
+3. **Multi-Hop Traversal**: Executes Breadth-First Search (BFS) starting from query seed entities up to depth $N$, resolving transitive cross-document relationships.
+
+---
+
+### 💬 Conversational RAG & Contextual Query Condensation
+
+In multi-turn chat applications, naive concatenation of the full conversation history pollutes vector embeddings. **Contextual Query Condensation**:
+1. **Resolves Coreferences & Anaphora**: Rewrites ambiguous follow-up questions (*"And how much RAM per node?"*) into standalone search queries (*"How much RAM is recommended per node for a Redis cluster?"*).
+2. **Precision Retrieval**: Searches the hybrid index with the disambiguated standalone query, ensuring only relevant chunks are retrieved.
+3. **Maintains Clean History**: Updates session conversational history across user/assistant turns.
 
 ---
 
@@ -171,6 +178,9 @@ npm run test:10
 
 # Run Module 11: GraphRAG & Multi-Hop Traversal
 npm run test:11
+
+# Run Module 12: Conversational RAG & Contextual Condensation
+npm run test:12
 ```
 
 ---
@@ -195,7 +205,8 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 | **09** | [`09-adaptive-router`](./09-adaptive-router) | Enrutamiento Adaptativo de Consultas y Despacho Agéntico: Directo, SQL y Vector RAG | ✅ Completado |
 | **10** | [`10-parent-document-retriever`](./10-parent-document-retriever) | Recuperación de Documento Padre y Chunking Jerárquico (Small-to-Big Retrieval) | ✅ Completado |
 | **11** | [`11-graph-rag`](./11-graph-rag) | GraphRAG: Extracción de Entidades-Relaciones, Grafo Dirigido y Travesía Multi-Salto | ✅ Completado |
-| **12** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
+| **12** | [`12-conversational-rag`](./12-conversational-rag) | RAG Conversacional y Condensación Contextual de Consultas (Resolución Anafórica) | ✅ Completado |
+| **13** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
 
 ---
 
@@ -257,7 +268,15 @@ $$RRF(d) = \sum_{m \in M} \frac{1}{k + r_m(d)}$$
 
 1. **Extracción Estructurada de Ternas**: Extrae relaciones explícitas ($\text{Sujeto} \xrightarrow{\text{Relación}} \text{Objeto}$) con evidencias textuales.
 2. **Almacén de Grafo Dirigido**: Indexa entidades y aristas en memoria.
-3. **Recorrido BFS Multi-Salto**: Conecta dependencias indirectas entre documentos aislados (ej. *Facturación* $\rightarrow$ *Auth Gateway* $\rightarrow$ *CloudTrail*).
+3. **Recorrido BFS Multi-Salto**: Conecta dependencias indirectas entre documentos aislados.
+
+---
+
+### 💬 RAG Conversacional y Condensación Contextual de Consultas
+
+1. **Resolución de Anáforas y Correferencias**: Transforma consultas vagas de seguimiento (*"¿Y cuánta memoria RAM se recomienda por nodo?"*) en preguntas autocontenidas (*"¿Cuánta memoria RAM se recomienda por nodo para un clúster de Redis?"*).
+2. **Búsqueda Precisa**: Recupera fragmentos exactos sin contaminación por temas tratados en turnos anteriores.
+3. **Gestión de Sesión**: Mantiene el historial estructurado de la conversación.
 
 ---
 
@@ -316,4 +335,7 @@ npm run test:10
 
 # Ejecutar Módulo 11: GraphRAG y Travesía Multi-Salto
 npm run test:11
+
+# Ejecutar Módulo 12: RAG Conversacional y Condensación de Consultas
+npm run test:12
 ```

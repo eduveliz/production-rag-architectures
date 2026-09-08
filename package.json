@@ -14,7 +14,8 @@
     "test:08": "tsx --env-file=.env 08-query-transformer/test.ts",
     "test:09": "tsx --env-file=.env 09-adaptive-router/test.ts",
     "test:10": "tsx --env-file=.env 10-parent-document-retriever/test.ts",
-    "test:11": "tsx --env-file=.env 11-graph-rag/test.ts"
+    "test:11": "tsx --env-file=.env 11-graph-rag/test.ts",
+    "test:12": "tsx --env-file=.env 12-conversational-rag/test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.18.0",
