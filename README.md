@@ -27,7 +27,8 @@ This repository contains production-grade implementations, architectural pattern
 | **10** | [`10-parent-document-retriever`](./10-parent-document-retriever) | Parent-Document Retrieval & Hierarchical Chunking (Small-to-Big Retrieval) | ✅ Completed |
 | **11** | [`11-graph-rag`](./11-graph-rag) | GraphRAG: Entity-Relation Extraction, Directed Knowledge Graph & Multi-Hop Traversal | ✅ Completed |
 | **12** | [`12-conversational-rag`](./12-conversational-rag) | Conversational RAG & Contextual Query Condensation (Coreference & Anaphora Resolution) | ✅ Completed |
-| **13** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
+| **13** | [`13-corrective-rag`](./13-corrective-rag) | Corrective RAG (CRAG): Retrieval Auditing, Confidence Gating & Fallback Routing | ✅ Completed |
+| **14** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
 
 ---
 
@@ -122,6 +123,15 @@ In multi-turn chat applications, naive concatenation of the full conversation hi
 
 ---
 
+### 🛡️ Corrective RAG (CRAG) & Retrieval Auditing
+
+Corrective RAG (CRAG) addresses the vulnerability of noise-induced hallucinations and out-of-domain failures by inserting an active **Retrieval Evaluator**:
+1. **`CORRECT`**: Distills only verified factual statements from the retrieved context, discarding irrelevant tokens before final synthesis.
+2. **`AMBIGUOUS`**: Bounded generation that answers strictly what is provable and explicitly flags missing information gaps.
+3. **`INCORRECT`**: Immediately halts context injection to prevent noise poisoning, executing safe deterministic fallback routing.
+
+---
+
 ### 🛠️ Getting Started
 
 #### Prerequisites
@@ -181,6 +191,9 @@ npm run test:11
 
 # Run Module 12: Conversational RAG & Contextual Condensation
 npm run test:12
+
+# Run Module 13: Corrective RAG (CRAG)
+npm run test:13
 ```
 
 ---
@@ -206,7 +219,8 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 | **10** | [`10-parent-document-retriever`](./10-parent-document-retriever) | Recuperación de Documento Padre y Chunking Jerárquico (Small-to-Big Retrieval) | ✅ Completado |
 | **11** | [`11-graph-rag`](./11-graph-rag) | GraphRAG: Extracción de Entidades-Relaciones, Grafo Dirigido y Travesía Multi-Salto | ✅ Completado |
 | **12** | [`12-conversational-rag`](./12-conversational-rag) | RAG Conversacional y Condensación Contextual de Consultas (Resolución Anafórica) | ✅ Completado |
-| **13** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
+| **13** | [`13-corrective-rag`](./13-corrective-rag) | Corrective RAG (CRAG): Auditoría de Recuperación, Umbrales de Confianza y Fallback | ✅ Completado |
+| **14** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
 
 ---
 
@@ -280,6 +294,15 @@ $$RRF(d) = \sum_{m \in M} \frac{1}{k + r_m(d)}$$
 
 ---
 
+### 🛡️ Corrective RAG (CRAG) y Auditoría Activa de Recuperación
+
+Corrective RAG (CRAG) mitiga las alucinaciones inducidas por ruido y consultas fuera de dominio interponiendo un **Evaluador de Recuperación Activo**:
+1. **`CORRECT`**: Extrae y destila exclusivamente las afirmaciones fácticas verificadas, eliminando tokens ruidosos antes de la generación.
+2. **`AMBIGUOUS`**: Síntesis acotada que responde únicamente lo demostrable y declara de forma explícita los vacíos de información.
+3. **`INCORRECT`**: Bloquea de inmediato la inyección de fragmentos irrelevantes al prompt, ejecutando una respuesta de fallback segura sin especulaciones.
+
+---
+
 ### 🛠️ Primeros Pasos
 
 #### Requisitos Previos
@@ -338,4 +361,7 @@ npm run test:11
 
 # Ejecutar Módulo 12: RAG Conversacional y Condensación de Consultas
 npm run test:12
+
+# Ejecutar Módulo 13: Corrective RAG (CRAG)
+npm run test:13
 ```
