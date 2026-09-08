@@ -29,7 +29,8 @@ This repository contains production-grade implementations, architectural pattern
 | **12** | [`12-conversational-rag`](./12-conversational-rag) | Conversational RAG & Contextual Query Condensation (Coreference & Anaphora Resolution) | ✅ Completed |
 | **13** | [`13-corrective-rag`](./13-corrective-rag) | Corrective RAG (CRAG): Retrieval Auditing, Confidence Gating & Fallback Routing | ✅ Completed |
 | **14** | [`14-contextual-retrieval`](./14-contextual-retrieval) | Contextual Retrieval: Situational Chunk Pre-Enrichment & Disambiguation | ✅ Completed |
-| **15** | *Coming Soon* | Late Chunking Architectures & Token-Level Semantic Pooling | ⏳ Upcoming |
+| **15** | [`15-semantic-router`](./15-semantic-router) | High-Throughput Semantic Router (Non-LLM Intent Classification via Precomputed Embeddings) | ✅ Completed |
+| **16** | *Coming Soon* | Late Chunking Architectures & Token-Level Semantic Pooling | ⏳ Upcoming |
 
 ---
 
@@ -142,6 +143,15 @@ To overcome the **Orphan Chunk Problem** where isolated chunks lose document-lev
 
 ---
 
+### ⚡ High-Throughput Semantic Router (Non-LLM Intent Dispatch)
+
+To avoid the multi-second latency and monetary cost of generative LLM dispatch prompts:
+1. **Bootstrap Precomputation**: Embeddings for canonical utterances (`CHITCHAT`, `STRUCTURED_SQL`, `DOCS_RAG`) are pre-generated during startup.
+2. **Local Cosine Comparison**: Queries compute a single embedding and calculate cosine similarities against all route vectors in memory ($< 1\text{ ms}$).
+3. **Threshold-Gated Fallback**: Automatically falls back to default handlers if maximum similarity falls below route confidence thresholds.
+
+---
+
 ### 🛠️ Getting Started
 
 #### Prerequisites
@@ -207,6 +217,9 @@ npm run test:13
 
 # Run Module 14: Contextual Retrieval
 npm run test:14
+
+# Run Module 15: High-Throughput Semantic Router
+npm run test:15
 ```
 
 ---
@@ -234,7 +247,8 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 | **12** | [`12-conversational-rag`](./12-conversational-rag) | RAG Conversacional y Condensación Contextual de Consultas (Resolución Anafórica) | ✅ Completado |
 | **13** | [`13-corrective-rag`](./13-corrective-rag) | Corrective RAG (CRAG): Auditoría de Recuperación, Umbrales de Confianza y Fallback | ✅ Completado |
 | **14** | [`14-contextual-retrieval`](./14-contextual-retrieval) | Contextual Retrieval: Pre-enriquecimiento Contextual y Desambiguación de Chunks | ✅ Completado |
-| **15** | *Próximamente* | Late Chunking y Pooling Semántico a Nivel de Tokens | ⏳ Próximo |
+| **15** | [`15-semantic-router`](./15-semantic-router) | Enrutador Semántico de Alto Rendimiento (Clasificación de Intenciones No Generativa) | ✅ Completado |
+| **16** | *Próximamente* | Late Chunking y Pooling Semántico a Nivel de Tokens | ⏳ Próximo |
 
 ---
 
@@ -326,6 +340,15 @@ Resuelve el **Problema del Fragmento Huérfano** anteponiendo metacontexto situa
 
 ---
 
+### ⚡ Enrutador Semántico de Alto Rendimiento (Despacho No-LLM)
+
+Elimina la latencia de segundos y el costo de tokens de los clasificadores basados en prompts a LLMs:
+1. **Precomputación en Arranque**: Los embeddings de frases canónicas (`CHITCHAT`, `STRUCTURED_SQL`, `DOCS_RAG`) se calculan una sola vez al iniciar el servicio.
+2. **Comparación Vectorial Local**: Al recibir una consulta, se obtiene su embedding y se evalúa la similitud de coseno en memoria en $< 1\text{ ms}$.
+3. **Fallback Determinista**: Despacha a una ruta por defecto si el score de similitud no supera los umbrales de confianza requeridos.
+
+---
+
 ### 🛠️ Primeros Pasos
 
 #### Requisitos Previos
@@ -390,4 +413,7 @@ npm run test:13
 
 # Ejecutar Módulo 14: Contextual Retrieval
 npm run test:14
+
+# Ejecutar Módulo 15: Enrutador Semántico de Alto Rendimiento
+npm run test:15
 ```
