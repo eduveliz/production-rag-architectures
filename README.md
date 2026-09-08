@@ -28,7 +28,8 @@ This repository contains production-grade implementations, architectural pattern
 | **11** | [`11-graph-rag`](./11-graph-rag) | GraphRAG: Entity-Relation Extraction, Directed Knowledge Graph & Multi-Hop Traversal | ✅ Completed |
 | **12** | [`12-conversational-rag`](./12-conversational-rag) | Conversational RAG & Contextual Query Condensation (Coreference & Anaphora Resolution) | ✅ Completed |
 | **13** | [`13-corrective-rag`](./13-corrective-rag) | Corrective RAG (CRAG): Retrieval Auditing, Confidence Gating & Fallback Routing | ✅ Completed |
-| **14** | *Coming Soon* | Contextual Embeddings & Late Chunking Architectures | ⏳ Upcoming |
+| **14** | [`14-contextual-retrieval`](./14-contextual-retrieval) | Contextual Retrieval: Situational Chunk Pre-Enrichment & Disambiguation | ✅ Completed |
+| **15** | *Coming Soon* | Late Chunking Architectures & Token-Level Semantic Pooling | ⏳ Upcoming |
 
 ---
 
@@ -132,6 +133,15 @@ Corrective RAG (CRAG) addresses the vulnerability of noise-induced hallucination
 
 ---
 
+### 🏷️ Contextual Retrieval & Chunk Pre-Enrichment
+
+To overcome the **Orphan Chunk Problem** where isolated chunks lose document-level context (project names, dates, system entities):
+1. **Situational Context Generation**: An LLM generates a concise 1–2 sentence context header situated within the global document scope.
+2. **Text Prepending**: Prepends `[Context: ...]` to the chunk text prior to dense embedding and sparse BM25 indexing.
+3. **Dual Keyword & Semantic Disambiguation**: Allows queries mentioning global entities to achieve exact lexical and dense vector hits without hydrating massive parent documents.
+
+---
+
 ### 🛠️ Getting Started
 
 #### Prerequisites
@@ -194,6 +204,9 @@ npm run test:12
 
 # Run Module 13: Corrective RAG (CRAG)
 npm run test:13
+
+# Run Module 14: Contextual Retrieval
+npm run test:14
 ```
 
 ---
@@ -220,7 +233,8 @@ Este repositorio contiene implementaciones de nivel de producción, patrones de 
 | **11** | [`11-graph-rag`](./11-graph-rag) | GraphRAG: Extracción de Entidades-Relaciones, Grafo Dirigido y Travesía Multi-Salto | ✅ Completado |
 | **12** | [`12-conversational-rag`](./12-conversational-rag) | RAG Conversacional y Condensación Contextual de Consultas (Resolución Anafórica) | ✅ Completado |
 | **13** | [`13-corrective-rag`](./13-corrective-rag) | Corrective RAG (CRAG): Auditoría de Recuperación, Umbrales de Confianza y Fallback | ✅ Completado |
-| **14** | *Próximamente* | Contextual Embeddings y Arquitecturas de Late Chunking | ⏳ Próximo |
+| **14** | [`14-contextual-retrieval`](./14-contextual-retrieval) | Contextual Retrieval: Pre-enriquecimiento Contextual y Desambiguación de Chunks | ✅ Completado |
+| **15** | *Próximamente* | Late Chunking y Pooling Semántico a Nivel de Tokens | ⏳ Próximo |
 
 ---
 
@@ -303,6 +317,15 @@ Corrective RAG (CRAG) mitiga las alucinaciones inducidas por ruido y consultas f
 
 ---
 
+### 🏷️ Contextual Retrieval y Pre-enriquecimiento de Chunks
+
+Resuelve el **Problema del Fragmento Huérfano** anteponiendo metacontexto situacional antes de la indexación:
+1. **Generación de Cabecera Contextual**: Un LLM sintetiza de 1 a 2 oraciones breves situando el fragmento en el documento global (entidades, versiones, fechas).
+2. **Inyección Previa a Indexación**: Antepone `[Contexto: ...]` al texto indexable densa y dispersamente.
+3. **Desambiguación Híbrida**: Permite que consultas con palabras clave globales hagan match exacto en BM25 y vectores densos con alta precisión y bajo consumo de tokens.
+
+---
+
 ### 🛠️ Primeros Pasos
 
 #### Requisitos Previos
@@ -364,4 +387,7 @@ npm run test:12
 
 # Ejecutar Módulo 13: Corrective RAG (CRAG)
 npm run test:13
+
+# Ejecutar Módulo 14: Contextual Retrieval
+npm run test:14
 ```
